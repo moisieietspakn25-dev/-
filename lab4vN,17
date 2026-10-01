@@ -1,0 +1,262 @@
+Лабораторна робота №4
+
+Тема: Властивості та статичні члени. Індексатори й перевантаження операторів.
+
+Мета: Навчитися реалізовувати властивості з перевіркою, використовувати статичні члени класу, індексатори та перевантаження операторів для створення зручних і виразних класів.
+
+Хід роботи
+Створено консольний проєкт lab4vN у директорії OOP-Мойсєєць.
+Реалізовано клас RectangleF, який описує прямокутник.
+Додано приватні поля для зберігання ширини, висоти та назви прямокутника.
+Створено публічні властивості Width, Height та Name з перевіркою коректності значень.
+Додано статичне поле RectangleCount, яке підраховує кількість створених об'єктів.
+Реалізовано індексатор, який дозволяє отримувати ширину або висоту за індексом.
+Перевантажено оператор + для створення нового прямокутника з сумарними шириною та висотою.
+Перевизначено методи ToString(), Equals() та GetHashCode().
+У методі Main() створено декілька об'єктів та продемонстровано роботу всіх реалізованих можливостей.
+using System;
+
+namespace Lab4
+{
+    class RectangleF
+    {
+        private double _width;
+        private double _height;
+        private string _name;
+
+        // Статичне поле для підрахунку об'єктів
+        public static int RectangleCount { get; private set; }
+
+        // Властивість ширини з перевіркою
+        public double Width
+        {
+            get => _width;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentException("Ширина повинна бути більшою за 0.");
+
+                _width = value;
+            }
+        }
+
+        // Властивість висоти з перевіркою
+        public double Height
+        {
+            get => _height;
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentException("Висота повинна бути більшою за 0.");
+
+                _height = value;
+            }
+        }
+
+        // Властивість назви
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                    throw new ArgumentException("Назва не може бути порожньою.");
+
+                _name = value;
+            }
+        }
+
+        // Властивість площі
+        public double Area => Width * Height;
+
+        // Конструктор
+        public RectangleF(string name, double width, double height)
+        {
+            Name = name;
+            Width = width;
+            Height = height;
+
+            RectangleCount++;
+        }
+
+        // Індексатор
+        // 0 - Width, 1 - Height
+        public double this[int index]
+        {
+            get
+            {
+                return index switch
+                {
+                    0 => Width,
+                    1 => Height,
+                    _ => throw new IndexOutOfRangeException(
+                        "Індекс повинен бути 0 або 1.")
+                };
+            }
+
+            set
+            {
+                switch (index)
+                {
+                    case 0:
+                        Width = value;
+                        break;
+
+                    case 1:
+                        Height = value;
+                        break;
+
+                    default:
+                        throw new IndexOutOfRangeException(
+                            "Індекс повинен бути 0 або 1.");
+                }
+            }
+        }
+
+        // Перевантаження оператора +
+        public static RectangleF operator +(RectangleF first, RectangleF second)
+        {
+            return new RectangleF(
+                first.Name + " + " + second.Name,
+                first.Width + second.Width,
+                first.Height + second.Height
+            );
+        }
+
+        // Перевизначення ToString()
+        public override string ToString()
+        {
+            return $"Прямокутник \"{Name}\": " +
+                   $"ширина = {Width}, висота = {Height}, площа = {Area}";
+        }
+
+        // Перевизначення Equals()
+        public override bool Equals(object? obj)
+        {
+            if (obj is not RectangleF other)
+                return false;
+
+            return Width == other.Width &&
+                   Height == other.Height &&
+                   Name == other.Name;
+        }
+
+        // Перевизначення GetHashCode()
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Name, Width, Height);
+        }
+
+        // Перевантаження ==
+        public static bool operator ==(RectangleF? first, RectangleF? second)
+        {
+            if (ReferenceEquals(first, second))
+                return true;
+
+            if (first is null || second is null)
+                return false;
+
+            return first.Equals(second);
+        }
+
+        // Перевантаження !=
+        public static bool operator !=(RectangleF? first, RectangleF? second)
+        {
+            return !(first == second);
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            Console.WriteLine("Лабораторна робота №4");
+            Console.WriteLine("Властивості, статичні члени, індексатори");
+            Console.WriteLine("та перевантаження операторів");
+            Console.WriteLine();
+
+            // Створення об'єктів
+            RectangleF rectangle1 =
+                new RectangleF("Перший", 10, 5);
+
+            RectangleF rectangle2 =
+                new RectangleF("Другий", 7, 3);
+
+            RectangleF rectangle3 =
+                new RectangleF("Третій", 10, 5);
+
+            // Виведення об'єктів
+            Console.WriteLine("Створені об'єкти:");
+            Console.WriteLine(rectangle1);
+            Console.WriteLine(rectangle2);
+            Console.WriteLine(rectangle3);
+
+            Console.WriteLine();
+
+            // Демонстрація властивостей
+            Console.WriteLine("Властивості:");
+            Console.WriteLine($"Ширина першого: {rectangle1.Width}");
+            Console.WriteLine($"Висота першого: {rectangle1.Height}");
+            Console.WriteLine($"Площа першого: {rectangle1.Area}");
+
+            Console.WriteLine();
+
+            // Демонстрація індексатора
+            Console.WriteLine("Індексатор:");
+            Console.WriteLine($"rectangle1[0] = {rectangle1[0]}");
+            Console.WriteLine($"rectangle1[1] = {rectangle1[1]}");
+
+            rectangle1[0] = 12;
+
+            Console.WriteLine(
+                $"Після зміни rectangle1[0] = {rectangle1[0]}");
+
+            Console.WriteLine();
+
+            // Демонстрація статичного члена
+            Console.WriteLine(
+                $"Кількість створених прямокутників: " +
+                $"{RectangleF.RectangleCount}");
+
+            Console.WriteLine();
+
+            // Перевантаження оператора +
+            RectangleF rectangle4 = rectangle1 + rectangle2;
+
+            Console.WriteLine("Результат rectangle1 + rectangle2:");
+            Console.WriteLine(rectangle4);
+
+            Console.WriteLine();
+
+            // Перевірка операторів == та !=
+            Console.WriteLine("Порівняння об'єктів:");
+
+            Console.WriteLine(
+                $"rectangle1 == rectangle3: {rectangle1 == rectangle3}");
+
+            Console.WriteLine(
+                $"rectangle1 != rectangle2: {rectangle1 != rectangle2}");
+
+            Console.WriteLine();
+
+            // Демонстрація валідації
+            Console.WriteLine("Перевірка валідації:");
+
+            try
+            {
+                rectangle2.Width = -5;
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Помилка: {ex.Message}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Роботу програми завершено.");
+        }
+    }
+}Висновок
+
+У ході виконання лабораторної роботи було створено клас RectangleF, який демонструє основні можливості об'єктно-орієнтованого програмування в C#. Було реалізовано властивості з валідацією даних, що не дозволяють встановлювати некоректні значення ширини та висоти. Для підрахунку створених об'єктів використано статичний член класу. За допомогою індексатора реалізовано зручний доступ до ширини та висоти прямокутника через оператор []. Також було перевантажено оператори +, == та !=, що дозволило виконувати операції над об'єктами класу у зручній формі. Додатково перевизначено методи ToString(), Equals() та GetHashCode(). У методі Main() продемонстровано роботу всіх реалізованих елементів класу.

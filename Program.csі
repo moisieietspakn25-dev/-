@@ -1,0 +1,122 @@
+using System;
+
+class Course
+{
+    // Приватні поля
+    private string _title;
+    private string _teacherName;
+    private int _credits;
+
+    // Публічна властивість Title
+    public string Title
+    {
+        get { return _title; }
+        set { _title = value; }
+    }
+
+    // Публічна властивість TeacherName
+    public string TeacherName
+    {
+        get { return _teacherName; }
+        set { _teacherName = value; }
+    }
+
+    // Публічна властивість Credits з валідацією
+    public int Credits
+    {
+        get { return _credits; }
+        set
+        {
+            if (value > 0)
+            {
+                _credits = value;
+            }
+            else
+            {
+                throw new ArgumentException("Кількість кредитів повинна бути більшою за 0.");
+            }
+        }
+    }
+
+    // Конструктор за замовчуванням
+    public Course()
+        : this("New Course", "N/A", 3)
+    {
+    }
+
+    // Параметризований конструктор
+    public Course(string title, string teacherName, int credits)
+    {
+        Title = title;
+        TeacherName = teacherName;
+        Credits = credits;
+    }
+
+    // Метод для зарахування студента на курс
+    public void EnrollStudent(string studentName)
+    {
+        Console.WriteLine(
+            $"Студент {studentName} зарахований на курс \"{Title}\"."
+        );
+    }
+
+    // Деструктор (фіналізатор)
+    ~Course()
+    {
+        Console.WriteLine($"Об'єкт курсу \"{Title}\" знищено.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // Створення об'єкта за допомогою конструктора за замовчуванням
+        Course course1 = new Course();
+
+        Console.WriteLine("Курс 1:");
+        Console.WriteLine($"Назва: {course1.Title}");
+        Console.WriteLine($"Викладач: {course1.TeacherName}");
+        Console.WriteLine($"Кредити: {course1.Credits}");
+
+        Console.WriteLine();
+
+        // Використання методу
+        course1.EnrollStudent("Павло Мойсєєць");
+
+        Console.WriteLine();
+
+        // Створення об'єкта за допомогою параметризованого конструктора
+        Course course2 = new Course(
+            "Об'єктно-орієнтоване програмування",
+            "Іван Петренко",
+            5
+        );
+
+        Console.WriteLine("Курс 2:");
+        Console.WriteLine($"Назва: {course2.Title}");
+        Console.WriteLine($"Викладач: {course2.TeacherName}");
+        Console.WriteLine($"Кредити: {course2.Credits}");
+
+        Console.WriteLine();
+
+        // Зарахування іншого студента
+        course2.EnrollStudent("Олександр");
+
+        Console.WriteLine();
+
+        // Перевірка валідації Credits
+        try
+        {
+            course2.Credits = 0;
+        }
+        catch (ArgumentException ex)
+        {
+            Console.WriteLine($"Помилка: {ex.Message}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Натисніть Enter для завершення...");
+        Console.ReadLine();
+    }
+}

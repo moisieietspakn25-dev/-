@@ -1,0 +1,231 @@
+```csharp
+using System;
+
+namespace OOP_Lab7
+{
+    // Базовий клас Calculator
+    class Calculator
+    {
+        // Віртуальний метод для виконання обчислення
+        public virtual double Calculate(double a, double b)
+        {
+            return a + b;
+        }
+
+        // Додатковий метод
+        public void ShowInfo()
+        {
+            Console.WriteLine("Базовий калькулятор.");
+        }
+    }
+
+    // Похідний клас A — ScientificCalculator
+    class ScientificCalculator : Calculator
+    {
+        // Override — перевизначення методу базового класу
+        public override double Calculate(double a, double b)
+        {
+            // Науковий калькулятор виконує піднесення
+            // числа a до степеня b
+            return Math.Pow(a, b);
+        }
+
+        // Додатковий метод
+        public double SquareRoot(double number)
+        {
+            return Math.Sqrt(number);
+        }
+    }
+
+    // Похідний клас B — BasicCalculator
+    class BasicCalculator : Calculator
+    {
+        // new — приховування методу базового класу
+        public new double Calculate(double a, double b)
+        {
+            // Простий калькулятор виконує віднімання
+            return a - b;
+        }
+
+        // Додатковий метод
+        public double Multiply(double a, double b)
+        {
+            return a * b;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+            Console.WriteLine("==========================================");
+            Console.WriteLine("Лабораторна робота №7");
+            Console.WriteLine("Варіант 17");
+            Console.WriteLine("Calculator → ScientificCalculator / BasicCalculator");
+            Console.WriteLine("==========================================");
+            Console.WriteLine();
+
+            // ==========================================
+            // 1. Створення об'єктів
+            // ==========================================
+
+            Calculator calculator = new Calculator();
+            ScientificCalculator scientific = new ScientificCalculator();
+            BasicCalculator basic = new BasicCalculator();
+
+            // ==========================================
+            // 2. Базовий клас
+            // ==========================================
+
+            Console.WriteLine("--- Базовий клас Calculator ---");
+
+            Console.WriteLine(
+                $"Calculator.Calculate(10, 5) = {calculator.Calculate(10, 5)}"
+            );
+
+            Console.WriteLine();
+
+            // ==========================================
+            // 3. Upcasting
+            // ==========================================
+
+            Console.WriteLine("--- Upcasting ---");
+
+            // Об'єкт ScientificCalculator зберігаємо
+            // у змінній базового типу Calculator
+            Calculator scientificAsCalculator = scientific;
+
+            // Об'єкт BasicCalculator зберігаємо
+            // у змінній базового типу Calculator
+            Calculator basicAsCalculator = basic;
+
+            Console.WriteLine(
+                $"scientificAsCalculator.Calculate(2, 3) = " +
+                $"{scientificAsCalculator.Calculate(2, 3)}"
+            );
+
+            Console.WriteLine(
+                $"basicAsCalculator.Calculate(10, 3) = " +
+                $"{basicAsCalculator.Calculate(10, 3)}"
+            );
+
+            Console.WriteLine();
+
+            // ==========================================
+            // 4. Демонстрація override
+            // ==========================================
+
+            Console.WriteLine("--- Демонстрація override ---");
+
+            Console.WriteLine("Через посилання Calculator:");
+            Console.WriteLine(
+                $"scientificAsCalculator.Calculate(2, 3) = " +
+                $"{scientificAsCalculator.Calculate(2, 3)}"
+            );
+
+            Console.WriteLine(
+                "Результат 8 означає 2^3. " +
+                "Метод ScientificCalculator був викликаний через override."
+            );
+
+            Console.WriteLine();
+
+            // Виклик через посилання похідного класу
+            Console.WriteLine("Через посилання ScientificCalculator:");
+            Console.WriteLine(
+                $"scientific.Calculate(2, 3) = {scientific.Calculate(2, 3)}"
+            );
+
+            Console.WriteLine();
+
+            // ==========================================
+            // 5. Демонстрація new
+            // ==========================================
+
+            Console.WriteLine("--- Демонстрація new ---");
+
+            Console.WriteLine("Через посилання BasicCalculator:");
+            Console.WriteLine(
+                $"basic.Calculate(10, 3) = {basic.Calculate(10, 3)}"
+            );
+
+            Console.WriteLine(
+                "Результат 7 — метод BasicCalculator виконує віднімання."
+            );
+
+            Console.WriteLine();
+
+            Console.WriteLine("Через посилання Calculator:");
+            Console.WriteLine(
+                $"basicAsCalculator.Calculate(10, 3) = " +
+                $"{basicAsCalculator.Calculate(10, 3)}"
+            );
+
+            Console.WriteLine(
+                "Результат 13 — викликано метод базового Calculator."
+            );
+
+            Console.WriteLine(
+                "Це демонструє, що new не забезпечує поліморфізм."
+            );
+
+            Console.WriteLine();
+
+            // ==========================================
+            // 6. Додаткові методи
+            // ==========================================
+
+            Console.WriteLine("--- Додаткові методи ---");
+
+            Console.WriteLine(
+                $"scientific.SquareRoot(25) = " +
+                $"{scientific.SquareRoot(25)}"
+            );
+
+            Console.WriteLine(
+                $"basic.Multiply(6, 4) = " +
+                $"{basic.Multiply(6, 4)}"
+            );
+
+            Console.WriteLine();
+
+            // ==========================================
+            // 7. Порівняння override та new
+            // ==========================================
+
+            Console.WriteLine("--- Порівняння override та new ---");
+
+            Console.WriteLine(
+                "ScientificCalculator через Calculator: " +
+                scientificAsCalculator.Calculate(2, 4)
+            );
+
+            Console.WriteLine(
+                "BasicCalculator через Calculator: " +
+                basicAsCalculator.Calculate(10, 4)
+            );
+
+            Console.WriteLine();
+
+            Console.WriteLine("Висновок:");
+            Console.WriteLine(
+                "override забезпечує поліморфізм: " +
+                "через посилання базового класу викликається " +
+                "перевизначений метод похідного класу."
+            );
+
+            Console.WriteLine(
+                "new лише приховує метод базового класу: " +
+                "результат залежить від типу посилання."
+            );
+
+            Console.WriteLine();
+            Console.WriteLine("==========================================");
+            Console.WriteLine("Програму завершено.");
+            Console.WriteLine("==========================================");
+        }
+    }
+}
+```
